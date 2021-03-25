@@ -5,4 +5,5 @@ Lab 0 Demo
 
 Lab 0 Stopwatch
 
-demo project
+demo project .zip
+
