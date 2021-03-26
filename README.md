@@ -5,6 +5,8 @@ Lab 0 Demo
 
 Lab 0 Stopwatch
 
+int_latency example
+
 demo project .zip
 
 int_latency.zip
