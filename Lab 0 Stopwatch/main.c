@@ -9,7 +9,7 @@
  *  Jonathan Lopez ECE 3849 D term 2021 Lab 0 Stopwatch
  */
 #include <stdint.h>
-#include <stdbool.h>
+#include <stdbool.h>A
 #include "driverlib/fpu.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/interrupt.h"
@@ -19,7 +19,7 @@
 
 uint32_t gSystemClock; // [Hz] system clock frequency
 volatile uint32_t gTime = 8345; // time in hundredths of a second
-extern volatile uint32_t gButtons; // from buttons.c
+extern volatile uint32_t gButtons; // from buttons.h
 
 int main(void)
 {
@@ -69,8 +69,8 @@ int main(void)
         GrStringDraw(&sContext, str, /*length*/ -1, /*x*/ 0, /*y*/ 0, /*opaque*/ false);
 
         //TODO display button states
-        snprintf(str, sizeof(str), "%u%u%u%u%u%u%u%u%u", (buttonP>>8)&1, (buttonP>>7)&1, (buttonP>>6)&1, (buttonP>>5)&1, (buttonP>>4)&1, (buttonP>>3)&1, (buttonP>>2)&1, (buttonP>>1)&1, (buttonP>>0)&1); //%u is for a unsigned integer
-        GrStringDraw(&sContext, str, /*length*/ -1, /*x*/ 0, /*y*/ 16, /*opaque*/ false);
+        snprintf(str, sizeof(str), "%u%u%u%u%u%u%u%u%u", (buttonP>>8)&1, (buttonP>>7)&1, (buttonP>>6)&1, (buttonP>>5)&1, (buttonP>>4)&1, (buttonP>>3)&1, (buttonP>>2)&1, (buttonP>>1)&1, (buttonP>>0)&1); //%u is for a unsigned integer and bit shift them over
+        GrStringDraw(&sContext, str, /*length*/ -1, /*x*/ 0, /*y*/ 16, /*opaque*/ false); // make y 16 so it doesn't write over the stopwatch display line
 
         GrFlush(&sContext); // flush the frame buffer to the LCD
     }
