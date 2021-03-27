@@ -27,11 +27,10 @@ uint32_t gADCSamplingRate;      // [Hz] actual ADC sampling rate
 
 // imported globals
 extern uint32_t gSystemClock;   // [Hz] system clock frequency
-extern volatile uint32_t gTi me; // time in hundredths of a second
+extern volatile uint32_t gTime; // time in hundredths of a second
 
 // initialize all button and joystick handling hardware
-void ButtonInit(void)
-{
+void ButtonInit(void){
     // initialize a general purpose timer for periodic interrupts
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER0);
     TimerDisable(TIMER0_BASE, TIMER_BOTH);
@@ -51,10 +50,13 @@ void ButtonInit(void)
 
     // analog input AIN13, at GPIO PD2 = BoosterPack Joystick HOR(X)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    GPIOPinTypeADC(GPIO_PORTD_BASE, GPIO_PIN_2);
+    GPIOPinTypeADC(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_2);
+    GPIOPadConfigSet(GPIO_PORTD_BASE, GPIO_PIN_4 | GPIO_PIN_2, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
+
     // analog input AIN17, at GPIO PK1 = BoosterPack Joystick VER(Y)
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOK);
-    GPIOPinTypeADC(GPIO_PORTK_BASE, GPIO_PIN_1);
+    GPIOPinTypeADC(GPIO_PORTK_BASE, GPIO_PIN_6 | GPIO_PIN_1);
+    GPIOPadConfigSet(GPIO_PORTK_BASE, GPIO_PIN_6 | GPIO_PIN_1, GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD_WPU);
 
     //TODO S1, S2 and Select Buttons
     //BoosterPack S1
@@ -89,8 +91,7 @@ void ButtonInit(void)
 }
 
 // update the debounced button state gButtons
-void ButtonDebounce(uint32_t buttons)
-{
+void ButtonDebounce(uint32_t buttons){
     int32_t i, mask;
     static int32_t state[BUTTON_COUNT]; // button state: 0 = released
     // BUTTON_PRESSED_STATE = pressed
@@ -115,8 +116,7 @@ void ButtonDebounce(uint32_t buttons)
 }
 
 // sample joystick and convert to button presses
-void ButtonReadJoystick(void)
-{
+void ButtonReadJoystick(void){
     ADCProcessorTrigger(ADC0_BASE, 0);          // trigger the ADC sample sequence for Joystick X and Y
     while(!ADCIntStatus(ADC0_BASE, 0, false));  // wait until the sample sequence has completed
     ADCSequenceDataGet(ADC0_BASE, 0, gJoystick);// retrieve joystick data
@@ -137,8 +137,7 @@ void ButtonReadJoystick(void)
 }
 
 // autorepeat button presses if a button is held long enough
-uint32_t ButtonAutoRepeat(void)
-{
+uint32_t ButtonAutoRepeat(void){
     static int count[BUTTON_AND_JOYSTICK_COUNT] = {0}; // autorepeat counts
     int i;
     uint32_t mask;
@@ -167,6 +166,7 @@ void ButtonISR(void) {
             | ((~GPIOPinRead(GPIO_PORTH_BASE, 0xff) & (GPIO_PIN_1)) << 1) //S1 button
             | ((~GPIOPinRead(GPIO_PORTK_BASE, 0xff) & (GPIO_PIN_6)) >> 3) //S2 button
             | ((~GPIOPinRead(GPIO_PORTD_BASE, 0xff) & (GPIO_PIN_4))); //Select button joystick
+
 
     uint32_t old_buttons = gButtons;    // save previous button state
     ButtonDebounce(gpio_buttons);       // Run the button debouncer. The result is in gButtons.

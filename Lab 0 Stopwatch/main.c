@@ -9,7 +9,7 @@
  *  Jonathan Lopez ECE 3849 D term 2021 Lab 0 Stopwatch
  */
 #include <stdint.h>
-#include <stdbool.h>A
+#include <stdbool.h>
 #include "driverlib/fpu.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/interrupt.h"
