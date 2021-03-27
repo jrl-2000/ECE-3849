@@ -1,12 +1,11 @@
 /**
  * main.c
  *
- * ECE 3849 Lab 0 Starter Project
- * Gene Bogdanov    10/18/2017
+ * ECE 3849 Lab 0 Stopwatch and Button/Joystick Config
+ * Jonathan Lopez    3/24/2021
  *
  * This version is using the new hardware for B2017: the EK-TM4C1294XL LaunchPad with BOOSTXL-EDUMKII BoosterPack.
  *
- *  Jonathan Lopez ECE 3849 D term 2021 Lab 0 Stopwatch
  */
 #include <stdint.h>
 #include <stdbool.h>
