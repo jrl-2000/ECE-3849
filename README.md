@@ -9,13 +9,15 @@ Lab 0 Stopwatch
 
 Lab 1 Digital Ocilloscope (coming soon)
 
-Lab 2 
+Lab 2 (coming soon)
 
-Lab 3
+Lab 3 (coming soon)
 
 Lectures
 
 int_latency example
+
+Lab 0 starter
 
 demo project .zip
 
