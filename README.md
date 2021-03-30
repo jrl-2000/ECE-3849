@@ -7,7 +7,7 @@ Lab 0 Demo
 
 Lab 0 Stopwatch
 
-Lab 1 Digital Ocilloscope (coming soon)
+Lab 1 Digital Oscilloscope  (coming soon)
 
 Lab 2 (coming soon)
 
