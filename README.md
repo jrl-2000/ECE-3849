@@ -1,7 +1,7 @@
 # ECE-3849
 Code from ECE 3849 (Real - Time Embedded Systems) D Term 2021 Prof. Stander
 
-Data Sheets
+Data Sheets (RTOS sheets in here)
 
 Lab 0 Demo
 
