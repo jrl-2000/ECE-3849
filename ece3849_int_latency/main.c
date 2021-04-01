@@ -1,6 +1,6 @@
 /*
  * main.c
- * Gene Bogdanov - 3/8/2013
+ * Gene Bogdanov - 3/8/2013, modified by Jennifer Stander 3/18/2021
  * ECE 3849 Real-time Embedded Systems
  * Code for measuring real-time task latency, response time and
  * determining if deadlines are met.  Additional code for measuring
@@ -47,6 +47,7 @@ uint32_t gSystemClock; // [Hz] system clock frequency
 //#define ENABLE_ISR 1
 //#define DISABLE_INTERRUPTS_IN_ISR // if defined, interrupts are disabled in the body of each ISR
 //#define DISABLE_INTERRUPTS_SHORT 1
+//#define ENABLE_CPU_LOAD_COUNT 1
 
 // measured event latencies in clock cycles
 uint32_t event0_latency = 0;
@@ -115,14 +116,15 @@ void main(void) {
     IntPrioritySet(INT_TIMER2A, 64); // 0 = highest priority, 32 = next lower
     IntEnable(INT_TIMER2A);
 
-#ifdef ENABLE_ISR
+#if defined(ENABLE_ISR) || defined(ENABLE_CPU_LOAD_COUNT)
     IntMasterEnable(); // comment for polled scheduling or CPU load testing
 #endif
 
+#ifndef ENABLE_CPU_LOAD_COUNT
     TimerEnable(TIMER0_BASE, TIMER_A); // comment for CPU load testing
     TimerEnable(TIMER1_BASE, TIMER_A);
     TimerEnable(TIMER2_BASE, TIMER_A);
-
+#endif
     // schedule the tasks without interrupts (using polling instead)
 
 #ifdef ROUND_ROBIN_POLLING
@@ -177,7 +179,8 @@ void main(void) {
 #endif
     //////////////////////////////////////////////////////////////////////////////
     // code for keeping track of CPU load
-/*
+#ifdef ENABLE_CPU_LOAD_COUNT
+
     // initialize timer 3 in one-shot mode for polled timing
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
     TimerDisable(TIMER3_BASE, TIMER_BOTH);
@@ -197,7 +200,8 @@ void main(void) {
         cpu_load = 1.0f - (float)count_loaded/count_unloaded; // compute CPU load
     }
 
-    */
+
+#endif
 }
 
 void event0_handler(void)
