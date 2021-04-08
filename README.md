@@ -7,7 +7,7 @@ Lab 0 Demo
 
 Lab 0 Stopwatch
 
-Lab 1 Digital Oscilloscope  (coming soon)
+Lab 1 Digital Oscilloscope  (current project)
 
 Lab 2 (coming soon)
 
@@ -18,6 +18,8 @@ Lectures
 int_latency example
 
 Lab 0 starter
+
+shared_data example
 
 demo project .zip
 
