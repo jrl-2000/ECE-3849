@@ -1,7 +1,7 @@
 /*
  * buttons.c
  *
- *  Created on: Aug 12, 2012, modified 9/8/2017
+ *  Created on: Aug 12, 2012, modified 4/10/2021
  *      Author: Gene Bogdanov
  *      Jonathan Lopez
  *
@@ -20,11 +20,17 @@
 #include "sysctl_pll.h"
 #include "buttons.h"
 
-// public globals
+#define FIFO_SIZE 10
+
 volatile uint32_t gButtons = 0; // debounced button state, one per bit in the lowest bits
 // button is pressed if its bit is 1, not pressed if 0
 uint32_t gJoystick[2] = {0};    // joystick coordinates
 uint32_t gADCSamplingRate;      // [Hz] actual ADC sampling rate
+
+//typedef char DataType;      // FIFO data type
+volatile char fifo[FIFO_SIZE];  // FIFO storage array
+volatile int fifo_1 = 0; // index of the first item in the FIFO
+volatile int fifo_last = 0; // index one step past the last item
 
 // imported globals
 extern uint32_t gSystemClock;   // [Hz] system clock frequency
@@ -88,6 +94,12 @@ void ButtonInit(void){
     ADCSequenceStepConfigure(ADC0_BASE, 0, 0, ADC_CTL_CH13);                             // Joystick HOR(X)
     ADCSequenceStepConfigure(ADC0_BASE, 0, 1, ADC_CTL_CH17 | ADC_CTL_IE | ADC_CTL_END);  // Joystick VER(Y)
     ADCSequenceEnable(ADC0_BASE, 0);
+
+    // Initialize CPU Load Timer
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
+    TimerDisable(TIMER3_BASE, TIMER_BOTH);
+    TimerConfigure(TIMER3_BASE, TIMER_CFG_ONE_SHOT);
+    TimerLoadSet(TIMER3_BASE, TIMER_A, gSystemClock/100 - 1); // 10 msec interval
 
 }
 
@@ -179,16 +191,55 @@ void ButtonISR(void) {
     static bool running = true;
 
     if (presses & 1) { // EK-TM4C1294XL button 1 pressed
-        running = !running;
+        fifo_put('a');
     }
 
     if (presses & 2) { // EK-TM4C1294XL button 2 pressed
-        gTime = 0; // rest the stopwatch
+        fifo_put('b');
     }
-
-
+    if (presses & 8) { // button 8 pressed boosterpack one
+        fifo_put('e');
+    }
     if (running) {
         if (tic) gTime++; // increment time every other ISR call
         tic = !tic;
     }
+}
+
+// put data into the FIFO, skip if full
+// returns 1 on success, 0 if FIFO was full
+int fifo_put(char data)
+{
+    int new_tail = fifo_last + 1;
+    if (new_tail >= FIFO_SIZE){
+        new_tail = 0; // wrap around
+    }
+    if (fifo_1 != new_tail) {    // if the FIFO is not full
+        fifo[fifo_last] = data;     // store data into the FIFO
+        fifo_last = new_tail;       // advance FIFO tail index
+        return 1;                   // success
+    }
+    return 0;   // full
+}
+// get data from the FIFO
+// returns 1 on success, 0 if FIFO was empty
+int fifo_get(char *data)
+{
+    if (fifo_1 != fifo_last) {   // if the FIFO is not empty
+        *data = fifo[fifo_1];    // read data from the FIFO
+        //        IntMasterDisable();
+
+        //        delay_us(1000);
+        if (fifo_1 + 1 >= FIFO_SIZE)
+        {
+            fifo_1 = 0; // wrap around
+        }
+        else
+        {
+            fifo_1++;             // advance FIFO head index
+        }
+        //        IntMasterEnable();
+        return 1;                   // success
+    }
+    return 0;   // empty
 }

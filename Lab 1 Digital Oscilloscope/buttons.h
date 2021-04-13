@@ -12,6 +12,7 @@
 
 #include <stdint.h>
 
+#define FIFO_SIZE 10
 #define BUTTON_COUNT 5				// number of buttons excluding joystick directions
 #define BUTTON_AND_JOYSTICK_COUNT 9 // number of buttons including joystick directions
 #define BUTTON_SAMPLES_PRESSED 2	// number of samples before a button is considered pressed
@@ -51,5 +52,11 @@ void ButtonReadJoystick(void);
 
 // autorepeat button presses if a button is held long enough
 uint32_t ButtonAutoRepeat(void);
+
+
+typedef char DataType;      // FIFO data type
+int fifo_put(DataType data);    // put button ID's, or command, into button FIFO
+int fifo_get(DataType *data);   // get button command from button FIFO
+
 
 #endif /* BUTTONS_H_ */

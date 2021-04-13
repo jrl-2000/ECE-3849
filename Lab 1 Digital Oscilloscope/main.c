@@ -6,23 +6,24 @@
  *
  *
  */
-#include <main.h>
 #include <sampling.h>
+#include "buttons.h"
+#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
+#include <math.h>
 #include "driverlib/fpu.h"
 #include "driverlib/sysctl.h"
 #include "driverlib/interrupt.h"
+#include "driverlib/timer.h"
 #include "Crystalfontz128x128_ST7735.h"
-#include <stdio.h>
-#include "buttons.h"
-#include <math.h>
 #include "inc/hw_memmap.h"
 #include "driverlib/gpio.h"
 #include "driverlib/pwm.h"
 #include "driverlib/pin_map.h"
-
 //Make a .h file!
+
 //Variables
 uint32_t gSystemClock; // [Hz] system clock frequency
 volatile uint32_t gTime = 8345; // time in hundredths of a second
@@ -31,10 +32,17 @@ float scale;
 float load = 0;
 float unload;
 float load1;
-extern volatile int32_t gADCBufferIndex = ADC_BUFFER_SIZE - 1; // latest sample index
-extern volatile uint16_t gADCBuffer[ADC_BUFFER_SIZE]; // circular buffer
-extern volatile uint32_t gADCErrors = 0; // number of missed ADC deadlines
+extern volatile int32_t gADCBufferIndex;                // latest sample index
+extern volatile uint16_t gADCBuffer[ADC_BUFFER_SIZE];   // circular buffer
+extern volatile uint32_t gADCErrors;
 const char * const gVoltageScaleStr[] = {"100 mV", "200 mV", "500 mV", " 1 V", " 2 V"};
+
+
+#define PWM_FREQUENCY 20000 // PWM frequency = 20 kHz
+#define MAX_BUTTON_PRESS 10 //FIFO
+#define FIFO_SIZE 10        // Maximum items in FIFO
+
+uint32_t CPULoad(void);
 
 int main(void)
 {
@@ -54,19 +62,9 @@ int main(void)
     GrContextInit(&sContext, &g_sCrystalfontz128x128); // Initialize the grlib graphics context
     GrContextFontSet(&sContext, &g_sFontFixed6x8); // select font
 
-    uint32_t time;  // local copy of gTime
-    char str[50];   // string buffer
-    unsigned int mins;
-    unsigned int secs;
-    unsigned int fracs;
-
-    uint32_t buttonP;
-    //mm:ss:ff
-    // full-screen rectangle
-    tRectangle rectFullScreen = {0, 0, GrContextDpyWidthGet(&sContext)-1, GrContextDpyHeightGet(&sContext)-1};
     ButtonInit();
-    IntMasterEnable();
-    //
+    initADC();
+    //Source Voltage
     // configure M0PWM2, at GPIO PF2, BoosterPack 1 header C1 pin 2
     // configure M0PWM3, at GPIO PF3, BoosterPack 1 header C1 pin 3
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
@@ -74,7 +72,7 @@ int main(void)
     GPIOPinConfigure(GPIO_PF2_M0PWM2);
     GPIOPinConfigure(GPIO_PF3_M0PWM3);
     GPIOPadConfigSet(GPIO_PORTF_BASE, GPIO_PIN_2 | GPIO_PIN_3,
-     GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
+                     GPIO_STRENGTH_2MA, GPIO_PIN_TYPE_STD);
     // configure the PWM0 peripheral, gen 1, outputs 2 and 3
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);
     PWMClockSet(PWM0_BASE, PWM_SYSCLK_DIV_1); // use system clock without division
@@ -85,26 +83,88 @@ int main(void)
     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT | PWM_OUT_3_BIT, true);
     PWMGenEnable(PWM0_BASE, PWM_GEN_1);
 
-    while (true) {
+    int ycordP, i, ycord, trig;
+    char button;
+    int voltsperDiv = 4;
+    int triggerSlope = 1;
+    char str1[50];
+    float fVoltsPerDiv[] = {0.1, 0.2, 0.5, 1, 2};
+    uint16_t sample[LCD_HORIZONTAL_MAX];  // Sample on LCD
+
+    unload = CPULoad();
+    // full-screen rectangle
+    tRectangle rectFullScreen = {0, 0, GrContextDpyWidthGet(&sContext)-1, GrContextDpyHeightGet(&sContext)-1};
+    IntMasterEnable();
+
+    while (true){
+        load = CPULoad();
+        load1 = 1.0 - (float)load/unload;
+        while (fifo_get(&button)){
+            switch(button){
+            case 'a':
+                voltsperDiv = ++voltsperDiv > 4 ? 4 : voltsperDiv++;
+                break;
+            case 'b':
+                voltsperDiv = --voltsperDiv > 4 ? 4 : voltsperDiv--;
+                break;
+            case'e':
+                triggerSlope = !triggerSlope;
+                break;
+            }
+        }
         GrContextForegroundSet(&sContext, ClrBlack);
         GrRectFill(&sContext, &rectFullScreen); // fill screen with black
-        time = gTime; // read shared global only once
-        buttonP = gButtons;
+        GrContextForegroundSet(&sContext, ClrBlue);
+        for(i = -3; i < 4; i++) {
+            GrLineDrawH(&sContext, 0, LCD_HORIZONTAL_MAX - 1, LCD_VERTICAL_MAX/2 + i * PIXELS_PER_DIV);
+            GrLineDrawV(&sContext, LCD_VERTICAL_MAX/2 + i * PIXELS_PER_DIV, 0, LCD_HORIZONTAL_MAX - 1);
+        }
+        GrContextForegroundSet(&sContext, ClrYellow);
+        trig = triggerSlope ? RisingTrigger(): FallingTrigger();
+        scale = (VIN_RANGE * PIXELS_PER_DIV) / ((1 << ADC_BITS) * fVoltsPerDiv[voltsperDiv]);
+        for (i = 0; i < LCD_HORIZONTAL_MAX - 1; i++)
+        {
+            // Copy waveform into local buffer
+            sample[i] = gADCBuffer[ADC_BUFFER_WRAP(trig - LCD_HORIZONTAL_MAX / 2 + i)];
 
-        //TODO Modify the snprintf() call in the infinite while loop to reformat the time into the desired mm:ss:ff (should display “Time = 01:23:45” instead of “Time = 008345” that this code produces). If you need documentation on the C library function snprintf(), look it up on the web.
-        //note to self: remember time is in 1/100 of second
-        mins = time / 6000;
-        secs = (time/100) % 60;
-        fracs = time % 100;
+            // draw lines
+            ycord = LCD_VERTICAL_MAX / 2 - (int)roundf(scale * ((int)sample[i] - ADC_OFFSET));
+            GrLineDraw(&sContext, i, ycordP, i + 1, ycord);
+            ycordP = ycord;
+        }
+        GrContextForegroundSet(&sContext, ClrWhite); //white text
+        if(triggerSlope){
+            GrLineDraw(&sContext, 105, 10, 115, 10);
+            GrLineDraw(&sContext, 115, 10, 115, 0);
+            GrLineDraw(&sContext, 115, 0, 125, 0);
+            GrLineDraw(&sContext, 112, 6, 115, 2);
+            GrLineDraw(&sContext, 115, 2, 118, 6);
+        }else{
+            GrLineDraw(&sContext, 105, 10, 115, 10);
+            GrLineDraw(&sContext, 115, 10, 115, 0);
+            GrLineDraw(&sContext, 115, 0, 125, 0);
+            GrLineDraw(&sContext, 112, 3, 115, 7);
+            GrLineDraw(&sContext, 115, 7, 118, 3);
+        }
 
-        snprintf(str, sizeof(str), "Time = %02d:%02d:%02d", mins, secs, fracs); // convert time to string
-        GrContextForegroundSet(&sContext, ClrYellow); // yellow text
-        GrStringDraw(&sContext, str, /*length*/ -1, /*x*/ 0, /*y*/ 0, /*opaque*/ false);
+        GrStringDraw(&sContext, "20 us", -1, 4, 0, false);
 
-        //TODO display button states
-        snprintf(str, sizeof(str), "%u%u%u%u%u%u%u%u%u", (buttonP>>8)&1, (buttonP>>7)&1, (buttonP>>6)&1, (buttonP>>5)&1, (buttonP>>4)&1, (buttonP>>3)&1, (buttonP>>2)&1, (buttonP>>1)&1, (buttonP>>0)&1); //%u is for a unsigned integer and bit shift them over
-        GrStringDraw(&sContext, str, /*length*/ -1, /*x*/ 0, /*y*/ 16, /*opaque*/ false); // make y 16 so it doesn't write over the stopwatch display line
+
+        GrStringDraw(&sContext, gVoltageScaleStr[voltsperDiv], -1, 50, 0, false);
+        snprintf(str1, sizeof(str1), "CPU load = %.1f%%", load1*100);
+        GrStringDraw(&sContext, str1, -1, 0, 120, false);
 
         GrFlush(&sContext); // flush the frame buffer to the LCD
     }
 }
+
+uint32_t CPULoad(void){
+    uint32_t i = 0;
+    TimerIntClear(TIMER3_BASE, TIMER_TIMA_TIMEOUT);
+    TimerEnable(TIMER3_BASE,TIMER_A);
+    while (!(TimerIntStatus(TIMER3_BASE, false) & TIMER_TIMA_TIMEOUT)) {
+        i++;
+    }
+    return i;
+}
+
