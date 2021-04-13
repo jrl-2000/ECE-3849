@@ -7,7 +7,7 @@ Lab 0 Demo
 
 Lab 0 Stopwatch
 
-Lab 1 Digital Oscilloscope  (current project)
+Lab 1 Digital Oscilloscope
 
 Lab 2 (coming soon)
 
