@@ -1,7 +1,7 @@
 # FIXED
 
 main.obj: ../main.c
-main.obj: E:/ECE/ECE3849/Lab\ 1\ Digital\ Ocilloscope/sampling.h
+main.obj: E:/ECE/ECE3849/Lab\ 1\ Digital\ Oscilloscope/sampling.h
 main.obj: E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/stdint.h
 main.obj: E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/_stdint40.h
 main.obj: E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/sys/stdint.h
@@ -32,7 +32,7 @@ main.obj: C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/dri
 main.obj: C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/driverlib/pin_map.h
 
 ../main.c: 
-E:/ECE/ECE3849/Lab\ 1\ Digital\ Ocilloscope/sampling.h: 
+E:/ECE/ECE3849/Lab\ 1\ Digital\ Oscilloscope/sampling.h: 
 E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/stdint.h: 
 E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/_stdint40.h: 
 E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/sys/stdint.h: 

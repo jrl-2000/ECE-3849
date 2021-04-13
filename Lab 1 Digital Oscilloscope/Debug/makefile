@@ -128,34 +128,34 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-Lab\ 1\ Digital\ Ocilloscope.out \
+Lab\ 1\ Digital\ Oscilloscope.out \
 
 EXE_OUTPUTS__QUOTED += \
-"Lab 1 Digital Ocilloscope.out" \
+"Lab 1 Digital Oscilloscope.out" \
 
 BIN_OUTPUTS += \
-Lab\ 1\ Digital\ Ocilloscope.hex \
+Lab\ 1\ Digital\ Oscilloscope.hex \
 
 BIN_OUTPUTS__QUOTED += \
-"Lab 1 Digital Ocilloscope.hex" \
+"Lab 1 Digital Oscilloscope.hex" \
 
 
 # All Target
 all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
-	@$(MAKE) --no-print-directory -Onone "Lab 1 Digital Ocilloscope.out"
+	@$(MAKE) --no-print-directory -Onone "Lab 1 Digital Oscilloscope.out"
 
 # Tool invocations
-Lab\ 1\ Digital\ Ocilloscope.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+Lab\ 1\ Digital\ Oscilloscope.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -O1 --opt_for_speed=3 --define=ccs="ccs" --define=PART_TM4C1294NCPDT -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"Lab 1 Digital Ocilloscope.map" --heap_size=0 --stack_size=2048 -i"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/lib" -i"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab 1 Digital Ocilloscope_linkInfo.xml" --rom_model -o "Lab 1 Digital Ocilloscope.out" $(ORDERED_OBJS)
+	"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me -O1 --opt_for_speed=3 --define=ccs="ccs" --define=PART_TM4C1294NCPDT -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"Lab 1 Digital Oscilloscope.map" --heap_size=0 --stack_size=2048 -i"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/lib" -i"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="Lab 1 Digital Oscilloscope_linkInfo.xml" --rom_model -o "Lab 1 Digital Oscilloscope.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
-Lab\ 1\ Digital\ Ocilloscope.hex: $(EXE_OUTPUTS)
+Lab\ 1\ Digital\ Oscilloscope.hex: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armhex"  -o "Lab 1 Digital Ocilloscope.hex" $(EXE_OUTPUTS__QUOTED)
+	"E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/bin/armhex"  -o "Lab 1 Digital Oscilloscope.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 

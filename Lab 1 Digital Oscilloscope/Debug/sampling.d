@@ -1,7 +1,7 @@
 # FIXED
 
 sampling.obj: ../sampling.c
-sampling.obj: E:/ECE/ECE3849/Lab\ 1\ Digital\ Ocilloscope/sampling.h
+sampling.obj: E:/ECE/ECE3849/Lab\ 1\ Digital\ Oscilloscope/sampling.h
 sampling.obj: E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/stdint.h
 sampling.obj: E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/_stdint40.h
 sampling.obj: E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/sys/stdint.h
@@ -31,7 +31,7 @@ sampling.obj: ../Crystalfontz128x128_ST7735.h
 sampling.obj: C:/ti/tirtos_tivac_2_16_01_14/products/TivaWare_C_Series-2.1.1.71b/grlib/grlib.h
 
 ../sampling.c: 
-E:/ECE/ECE3849/Lab\ 1\ Digital\ Ocilloscope/sampling.h: 
+E:/ECE/ECE3849/Lab\ 1\ Digital\ Oscilloscope/sampling.h: 
 E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/stdint.h: 
 E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/_stdint40.h: 
 E:/ti/ccs930/ccs/tools/compiler/ti-cgt-arm_18.12.4.LTS/include/sys/stdint.h: 

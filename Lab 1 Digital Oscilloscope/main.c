@@ -124,7 +124,7 @@ int main(void)
             GrLineDrawH(&sContext, 0, LCD_HORIZONTAL_MAX - 1, LCD_VERTICAL_MAX/2 + i * PIXELS_PER_DIV);
             GrLineDrawV(&sContext, LCD_VERTICAL_MAX/2 + i * PIXELS_PER_DIV, 0, LCD_HORIZONTAL_MAX - 1);
         }
-        waveform
+        //waveform
         GrContextForegroundSet(&sContext, ClrYellow);
         trig = triggerSlope ? RisingTrigger(): FallingTrigger();
         scale = (VIN_RANGE * PIXELS_PER_DIV) / ((1 << ADC_BITS) * fVoltsPerDiv[voltsperDiv]);
