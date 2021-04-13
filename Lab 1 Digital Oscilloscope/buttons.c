@@ -1,7 +1,7 @@
 /*
  * buttons.c
  *
- *  Created on: Aug 12, 2012, modified 4/10/2021
+ *  Created on: Aug 12, 2012, modified 4/12/2021
  *      Author: Gene Bogdanov
  *      Jonathan Lopez
  *
@@ -20,6 +20,7 @@
 #include "sysctl_pll.h"
 #include "buttons.h"
 
+//fifo size
 #define FIFO_SIZE 10
 
 volatile uint32_t gButtons = 0; // debounced button state, one per bit in the lowest bits
@@ -95,12 +96,11 @@ void ButtonInit(void){
     ADCSequenceStepConfigure(ADC0_BASE, 0, 1, ADC_CTL_CH17 | ADC_CTL_IE | ADC_CTL_END);  // Joystick VER(Y)
     ADCSequenceEnable(ADC0_BASE, 0);
 
-    // Initialize CPU Load Timer
+    // Init CPU Load Timer
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
     TimerDisable(TIMER3_BASE, TIMER_BOTH);
     TimerConfigure(TIMER3_BASE, TIMER_CFG_ONE_SHOT);
     TimerLoadSet(TIMER3_BASE, TIMER_A, gSystemClock/100 - 1); // 10 msec interval
-
 }
 
 // update the debounced button state gButtons
@@ -189,7 +189,7 @@ void ButtonISR(void) {
 
     static bool tic = false;
     static bool running = true;
-
+    //extra credit
     if (presses & 1) { // EK-TM4C1294XL button 1 pressed
         fifo_put('a');
     }
@@ -197,7 +197,7 @@ void ButtonISR(void) {
     if (presses & 2) { // EK-TM4C1294XL button 2 pressed
         fifo_put('b');
     }
-    if (presses & 8) { // button 8 pressed boosterpack one
+    if (presses & 8) { // button 8 pressed boosterpack one trigger
         fifo_put('e');
     }
     if (running) {

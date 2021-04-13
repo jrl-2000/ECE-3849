@@ -1,8 +1,9 @@
 /*
  * buttons.h
  *
- *  Created on: Aug 12, 2012, modified 9/8/2017
+ *  Created on: Aug 12, 2012, modified 4/12/21
  *      Author: Gene Bogdanov
+ *              Jonathan Lopez
  *
  *  Button debouncer, calibrated for 200 samples/sec.
  */
@@ -53,7 +54,7 @@ void ButtonReadJoystick(void);
 // autorepeat button presses if a button is held long enough
 uint32_t ButtonAutoRepeat(void);
 
-
+//Data type FIFO
 typedef char DataType;      // FIFO data type
 int fifo_put(DataType data);    // put button ID's, or command, into button FIFO
 int fifo_get(DataType *data);   // get button command from button FIFO

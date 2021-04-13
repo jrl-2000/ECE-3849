@@ -3,9 +3,11 @@
  *
  * ECE 3849 Lab 1 Digital Oscilloscope
  * Jonathan Lopez    3/24/2021
- *
+ * Completed 4/12/21
  *
  */
+
+//includes
 #include <sampling.h>
 #include "buttons.h"
 #include <stdio.h>
@@ -22,9 +24,8 @@
 #include "driverlib/gpio.h"
 #include "driverlib/pwm.h"
 #include "driverlib/pin_map.h"
-//Make a .h file!
 
-//Variables
+//Global Variables
 uint32_t gSystemClock; // [Hz] system clock frequency
 volatile uint32_t gTime = 8345; // time in hundredths of a second
 extern volatile uint32_t gButtons; // from buttons.h
@@ -37,17 +38,18 @@ extern volatile uint16_t gADCBuffer[ADC_BUFFER_SIZE];   // circular buffer
 extern volatile uint32_t gADCErrors;
 const char * const gVoltageScaleStr[] = {"100 mV", "200 mV", "500 mV", " 1 V", " 2 V"};
 
-
+//defines
 #define PWM_FREQUENCY 20000 // PWM frequency = 20 kHz
 #define MAX_BUTTON_PRESS 10 //FIFO
 #define FIFO_SIZE 10        // Maximum items in FIFO
 
+//Function prototypes
 uint32_t CPULoad(void);
 
+//main loop
 int main(void)
 {
     IntMasterDisable();
-
     // Enable the Floating Point Unit, and permit ISRs to use it
     FPUEnable();
     FPULazyStackingEnable();
@@ -64,7 +66,8 @@ int main(void)
 
     ButtonInit();
     initADC();
-    //Source Voltage
+
+    //Source Voltage Init
     // configure M0PWM2, at GPIO PF2, BoosterPack 1 header C1 pin 2
     // configure M0PWM3, at GPIO PF3, BoosterPack 1 header C1 pin 3
     SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
@@ -82,7 +85,7 @@ int main(void)
     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_3, roundf((float)gSystemClock/PWM_FREQUENCY*0.4f));
     PWMOutputState(PWM0_BASE, PWM_OUT_2_BIT | PWM_OUT_3_BIT, true);
     PWMGenEnable(PWM0_BASE, PWM_GEN_1);
-
+    //other variables
     int ycordP, i, ycord, trig;
     char button;
     int voltsperDiv = 4;
@@ -91,11 +94,11 @@ int main(void)
     float fVoltsPerDiv[] = {0.1, 0.2, 0.5, 1, 2};
     uint16_t sample[LCD_HORIZONTAL_MAX];  // Sample on LCD
 
-    unload = CPULoad();
+    unload = CPULoad(); //unload
     // full-screen rectangle
     tRectangle rectFullScreen = {0, 0, GrContextDpyWidthGet(&sContext)-1, GrContextDpyHeightGet(&sContext)-1};
     IntMasterEnable();
-
+    //main while loop
     while (true){
         load = CPULoad();
         load1 = 1.0 - (float)load/unload;
@@ -112,13 +115,16 @@ int main(void)
                 break;
             }
         }
+
         GrContextForegroundSet(&sContext, ClrBlack);
         GrRectFill(&sContext, &rectFullScreen); // fill screen with black
+        //blue grid
         GrContextForegroundSet(&sContext, ClrBlue);
         for(i = -3; i < 4; i++) {
             GrLineDrawH(&sContext, 0, LCD_HORIZONTAL_MAX - 1, LCD_VERTICAL_MAX/2 + i * PIXELS_PER_DIV);
             GrLineDrawV(&sContext, LCD_VERTICAL_MAX/2 + i * PIXELS_PER_DIV, 0, LCD_HORIZONTAL_MAX - 1);
         }
+        waveform
         GrContextForegroundSet(&sContext, ClrYellow);
         trig = triggerSlope ? RisingTrigger(): FallingTrigger();
         scale = (VIN_RANGE * PIXELS_PER_DIV) / ((1 << ADC_BITS) * fVoltsPerDiv[voltsperDiv]);
@@ -132,6 +138,7 @@ int main(void)
             GrLineDraw(&sContext, i, ycordP, i + 1, ycord);
             ycordP = ycord;
         }
+        //trigger, volts per div, cpu load
         GrContextForegroundSet(&sContext, ClrWhite); //white text
         if(triggerSlope){
             GrLineDraw(&sContext, 105, 10, 115, 10);
@@ -146,18 +153,16 @@ int main(void)
             GrLineDraw(&sContext, 112, 3, 115, 7);
             GrLineDraw(&sContext, 115, 7, 118, 3);
         }
-
         GrStringDraw(&sContext, "20 us", -1, 4, 0, false);
-
-
         GrStringDraw(&sContext, gVoltageScaleStr[voltsperDiv], -1, 50, 0, false);
         snprintf(str1, sizeof(str1), "CPU load = %.1f%%", load1*100);
         GrStringDraw(&sContext, str1, -1, 0, 120, false);
 
         GrFlush(&sContext); // flush the frame buffer to the LCD
-    }
-}
+    } //end of while
+}// end of main
 
+//cpu load function
 uint32_t CPULoad(void){
     uint32_t i = 0;
     TimerIntClear(TIMER3_BASE, TIMER_TIMA_TIMEOUT);
