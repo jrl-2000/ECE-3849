@@ -108,7 +108,7 @@ int main(void)
                 voltsperDiv = ++voltsperDiv > 4 ? 4 : voltsperDiv++;
                 break;
             case 'b':
-                voltsperDiv = --voltsperDiv > 4 ? 4 : voltsperDiv--;
+                voltsperDiv = --voltsperDiv <= 0 ? 0 : voltsperDiv--;
                 break;
             case'e':
                 triggerSlope = !triggerSlope;
@@ -130,15 +130,15 @@ int main(void)
         scale = (VIN_RANGE * PIXELS_PER_DIV) / ((1 << ADC_BITS) * fVoltsPerDiv[voltsperDiv]);
         for (i = 0; i < LCD_HORIZONTAL_MAX - 1; i++)
         {
-            // Copy waveform into local buffer
+            // Copies waveform into the local buffer
             sample[i] = gADCBuffer[ADC_BUFFER_WRAP(trig - LCD_HORIZONTAL_MAX / 2 + i)];
 
-            // draw lines
+            // draw the cord
             ycord = LCD_VERTICAL_MAX / 2 - (int)roundf(scale * ((int)sample[i] - ADC_OFFSET));
             GrLineDraw(&sContext, i, ycordP, i + 1, ycord);
             ycordP = ycord;
         }
-        //trigger, volts per div, cpu load
+        //trigger logo, volts per div, cpu load
         GrContextForegroundSet(&sContext, ClrWhite); //white text
         if(triggerSlope){
             GrLineDraw(&sContext, 105, 10, 115, 10);

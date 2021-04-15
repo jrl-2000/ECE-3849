@@ -80,7 +80,7 @@ int RisingTrigger(void){ // search for rising edge trigger
     return x;
 }
 
-int FallingTrigger(void){ // search for rising edge trigger
+int FallingTrigger(void){ // search for falling edge trigger
 
     // Step 1
     int x = gADCBufferIndex - LCD_HORIZONTAL_MAX / 2;/* half screen width; don’t use a magic number */;

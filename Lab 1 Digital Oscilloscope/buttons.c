@@ -100,7 +100,7 @@ void ButtonInit(void){
     SysCtlPeripheralEnable(SYSCTL_PERIPH_TIMER3);
     TimerDisable(TIMER3_BASE, TIMER_BOTH);
     TimerConfigure(TIMER3_BASE, TIMER_CFG_ONE_SHOT);
-    TimerLoadSet(TIMER3_BASE, TIMER_A, gSystemClock/100 - 1); // 10 msec interval
+    TimerLoadSet(TIMER3_BASE, TIMER_A, gSystemClock/100 - 1); //10 msec
 }
 
 // update the debounced button state gButtons
@@ -190,14 +190,18 @@ void ButtonISR(void) {
     static bool tic = false;
     static bool running = true;
     //extra credit
-    if (presses & 1) { // EK-TM4C1294XL button 1 pressed
+    if (presses & 1) { // EK-TM4C1294XL button 1 pressed 'A'
         fifo_put('a');
     }
 
-    if (presses & 2) { // EK-TM4C1294XL button 2 pressed
+    if (presses & 2) { // EK-TM4C1294XL button 2 pressed 'B'
         fifo_put('b');
     }
-    if (presses & 8) { // button 8 pressed boosterpack one trigger
+    //joystick is button C
+    //boosterpack S1 is D
+
+    if (presses & 8) { // button 8 pressed boosterpack S2 one trigger
+
         fifo_put('e');
     }
     if (running) {
