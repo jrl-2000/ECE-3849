@@ -9,7 +9,7 @@ Lab 0 Stopwatch
 
 Lab 1 Digital Oscilloscope
 
-Lab 2 RTOS Spectrum Analyzer (coming soon)
+Lab 2 RTOS, Spectrum Analyzer (coming soon)
 
 Lab 3 (coming soon)
 
@@ -17,7 +17,11 @@ Lectures
 
 int_latency example
 
-Lab 0 starter
+rtos_latency example
+
+Lab 0 Starter
+
+Lab 2 Starter
 
 shared_data example
 
