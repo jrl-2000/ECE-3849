@@ -13,7 +13,7 @@ Lab 2 RTOS, Spectrum Analyzer (commit errors will fix)
 
 Lab 3 (coming soon)
 
-Lectures
+Lectures (needs updating)
 
 int_latency example
 
