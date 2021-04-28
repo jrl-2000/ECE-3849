@@ -9,7 +9,7 @@ Lab 0 Stopwatch
 
 Lab 1 Digital Oscilloscope
 
-Lab 2 RTOS, Spectrum Analyzer (commit errors will fix)
+Lab 2 RTOS, Spectrum Analyzer
 
 Lab 3 (coming soon)
 
