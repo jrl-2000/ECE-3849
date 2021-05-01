@@ -15,12 +15,6 @@ Lab 3 Advanced I/O (coming soon)
 
 Lectures (updated 5/1/21)
 
-Lab 1 Report
-
-Lab 2 Report
-
-Lab 3 Report (Coming Soon)
-
 int_latency example
 
 rtos_latency example
@@ -30,6 +24,12 @@ Lab 0 Starter
 Lab 2 Starter
 
 shared_data example
+
+Lab 1 Report
+
+Lab 2 Report
+
+Lab 3 Report (Coming Soon)
 
 demo project .zip
 
