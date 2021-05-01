@@ -13,7 +13,7 @@ Lab 2 RTOS, Spectrum Analyzer
 
 Lab 3 (coming soon)
 
-Lectures (needs updating)
+Lectures (updated 5/1/21)
 
 Lab 1 Report
 
