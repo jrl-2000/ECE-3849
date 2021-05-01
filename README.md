@@ -11,13 +11,15 @@ Lab 1 Digital Oscilloscope
 
 Lab 2 RTOS, Spectrum Analyzer
 
-Lab 3 (coming soon)
+Lab 3 Advanced I/O (coming soon)
 
 Lectures (updated 5/1/21)
 
 Lab 1 Report
 
 Lab 2 Report
+
+Lab 3 Report (Coming Soon)
 
 int_latency example
 
