@@ -15,6 +15,10 @@ Lab 3 (coming soon)
 
 Lectures (needs updating)
 
+Lab 1 Report
+
+Lab 2 Report
+
 int_latency example
 
 rtos_latency example
