@@ -37,6 +37,6 @@ int_latency.zip
 
 kissfft (Spectrum Analyzer)
 
-Assortmenty of Zip, .c, and .h files used in labs. (unaltered)
+Assortment of Zip, .c, and .h files used in labs. (unaltered)
 
 Response Time MATLAB example
