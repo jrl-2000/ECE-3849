@@ -11,17 +11,25 @@ Lab 1 Digital Oscilloscope
 
 Lab 2 RTOS, Spectrum Analyzer
 
-Lab 3 Advanced I/O (coming soon)
+Lab 3 Advanced I/O
 
-Lectures (updated 5/1/21)
+Lectures (updated 5/12/21)
+
+ADC FIFO Example
+
+Event Example
+
+Event_CFG Example
 
 int_latency example
-
-rtos_latency example
 
 Lab 0 Starter
 
 Lab 2 Starter
+
+Profiling Example
+
+RTOS_Latency Example
 
 shared_data example
 
@@ -29,14 +37,22 @@ Lab 1 Report
 
 Lab 2 Report
 
-Lab 3 Report (Coming Soon)
+Lab 3 Report
 
-demo project .zip
+README
 
-int_latency.zip
+Assortment of .zip, .c, and .h files used in labs. (unaltered)
+
+demo projects .zip
+
+Lab 0 Zip File
+
+Lab 1 Zip File
+
+Lab 2 Zip File
+
+Lab 3 Zip File
 
 kissfft (Spectrum Analyzer)
-
-Assortment of Zip, .c, and .h files used in labs. (unaltered)
 
 Response Time MATLAB example
